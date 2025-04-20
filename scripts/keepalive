@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Doing nothing forever..."
+exec sleep infinity

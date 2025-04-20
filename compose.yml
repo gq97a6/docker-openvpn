@@ -1,0 +1,23 @@
+services:
+  openvpn:
+    container_name: openvpn
+    hostname: openvpn
+    image: gq97a6/openvpn
+    restart: unless-stopped
+    ports:
+      - 1194:1194/udp
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    volumes:
+      - ./storage/openvpn:/etc/openvpn
+    environment:
+      PUBLIC_IP: vpn.example.com
+      SUBNET_IP: 10.8.0.0
+      SUBNET_MASK: 255.255.255.0
+      SUBNET_CIDR: 10.1008.0.0/24
+      PORT: 1194
+      PROTOCOL: udp
+      ALLOW_INTERNET: true
+    command: run-server

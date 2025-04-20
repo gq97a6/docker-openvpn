@@ -1,0 +1,42 @@
+#!/bin/bash
+
+DF="/etc/openvpn"
+
+NUMBEROFCLIENTS=$(tail -n +2 $DF/easy-rsa/pki/index.txt | grep -c "^V")
+if [[ $NUMBEROFCLIENTS == '0' ]]; then
+    echo ""
+    echo "You have no existing clients!"
+    exit 1
+fi
+
+#Show a list of valid client certificates
+echo ""
+echo "Select the existing client certificate you want to revoke"
+tail -n +2 $DF/easy-rsa/pki/index.txt | grep "^V" | cut -d '=' -f 2 | nl -s ') '
+until [[ $CLIENTNUMBER -ge 1 && $CLIENTNUMBER -le $NUMBEROFCLIENTS ]]; do
+    if [[ $CLIENTNUMBER == '1' ]]; then
+        read -rp "Select one client [1]: " CLIENTNUMBER
+    else
+        read -rp "Select one client [1-$NUMBEROFCLIENTS]: " CLIENTNUMBER
+    fi
+done
+
+# Get selected client name
+CLIENT=$(tail -n +2 $DF/easy-rsa/pki/index.txt | grep "^V" | cut -d '=' -f 2 | sed -n "$CLIENTNUMBER"p)
+
+# Generate new certificate revokation list (crl)
+cd $DF/easy-rsa/ || return
+EASYRSA_BATCH=1 /usr/share/easy-rsa/easyrsa revoke "$CLIENT"
+EASYRSA_CRL_DAYS=3650 /usr/share/easy-rsa/easyrsa gen-crl
+
+# Replace crl with new one
+rm -f $DF/crl.pem
+cp $DF/easy-rsa/pki/crl.pem $DF/crl.pem
+chmod 644 $DF/crl.pem
+
+# Remove previously generated certs
+rm -f "$DF/client-certs/$CLIENT.ovpn"
+sed -i "/^$CLIENT,.*/d" $DF/ipp.txt
+
+# Backup the certificate index
+cp $DF/easy-rsa/pki/index.txt{,.bk}

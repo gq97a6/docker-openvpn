@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [[ $ALLOW_INTERNET == "true" ]]; then
+    iptables -t nat -I POSTROUTING 1 -s $SUBNET_CIDR -o eth0 -j MASQUERADE
+fi
+
+iptables -I INPUT 1 -i tun0 -j ACCEPT
+iptables -I FORWARD 1 -i eth0 -o tun0 -j ACCEPT
+iptables -I FORWARD 1 -i tun0 -o eth0 -j ACCEPT
+iptables -I INPUT 1 -i eth0 -p udp --dport $PORT -j ACCEPT
+
+# Run OpenVPN
+exec openvpn \
+    --status /run/openvpn/status.log 10 \
+    --cd /etc/openvpn \
+    --config "/etc/openvpn/server.conf" \
+    --writepid /run/openvpn/openvpn.pid
