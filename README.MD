@@ -104,6 +104,9 @@ To allow communication between clients, add the following line to `/etc/openvpn/
 client-to-client
 ```
 
+#### 6. Prevent or allow clients to connect to internet
+To prevent clients from accessing the internet, set the `ALLOW_INTERNET` environment variable to `false` in your `compose.yml` file. This will disable NAT (Network Address Translation) and prevent clients from accessing the internet through the VPN.
+
 ## Scripts
 Scripts are stored under `/etc/openvpn-scripts`. Mount this directory to customize them. You can also add your own scripts, folder is added to `PATH`.
 
