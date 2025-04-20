@@ -54,6 +54,56 @@ OpenVPN server as a Docker container. Secured with EasyRSA. Project is meant to 
     docker exec -it openvpn new-client
     ```
 
+## Customization
+
+#### 1. Change client DNS
+To change the DNS servers pushed to clients, modify lines below in `/etc/openvpn/server.conf`:
+```conf
+push "dhcp-option DNS 1.0.0.1"
+push "dhcp-option DNS 1.1.1.1"
+```
+
+#### 2. Change what traffic will be routed through the VPN (server-directed)
+To route all traffic through the VPN, use the following line in `/etc/openvpn/server.conf`:
+```conf
+push "redirect-gateway def1 bypass-dhcp"
+```
+- **redirect-gateway**: Modifies the client's routing table to send all traffic through the VPN.
+- **def1**: Uses two more specific routes instead of a single default route. This avoids overwriting the existing default route and makes it easier to restore the original settings.
+- **bypass-dhcp**: This tells the client to not redirect DHCP traffic through the VPN, which is important for clients that still need to get IP addresses from their local network.
+
+To route only specific traffic through the VPN, use the following line in `/etc/openvpn/server.conf`:
+```conf
+push "route 10.8.0.0 255.255.255.0"
+```
+
+#### 3. Change what traffic will be routed through the VPN (client-directed)
+To reject routes pushed by the server, add the following line to the client configuration file:
+```conf
+route-nopull
+```
+Then we can add specific routes:
+```conf
+route 10.8.0.0 255.255.255.0
+```
+Or we can route all traffic through the VPN:
+```conf
+redirect-gateway def1 bypass-dhcp
+```
+
+#### 4. Change server subnet or port
+Either start from scratch or modify manually the following files:
+- `/etc/openvpn/server.conf`
+- `/etc/openvpn/client-template.txt`
+- `/etc/openvpn/ipp.txt`
+- `/etc/openvpn/ccd/*`
+
+#### 5. Allow communication between clients
+To allow communication between clients, add the following line to `/etc/openvpn/server.conf`:
+```conf
+client-to-client
+```
+
 ## Scripts
 Scripts are stored under `/etc/openvpn-scripts`. Mount this directory to customize them. You can also add your own scripts, folder is added to `PATH`.
 
