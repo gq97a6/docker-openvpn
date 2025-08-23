@@ -11,12 +11,10 @@ OpenVPN server as a Docker container. Secured with EasyRSA. Project is meant to 
 > **sysctl -p**
 
 > [!NOTE]
-> If you plan to use a VPN only as a means of accessing your internal network (no internet access, route only VPN subnet)
-> or you have decided to set `ALLOW_INTERNET` to false, make sure you have configured routing policy correctly. (see [Customization section](#customization))
+> If you plan to use a VPN only as a means of accessing your internal network (no internet access, route only VPN subnet), or you have decided to set `ALLOW_INTERNET` to false, make sure you have configured routing policy correctly. (see [Customization section](#customization))
 
 > [!NOTE]
-> In case of DNS not resolving issues or if you plan to only route VPN subnet
-> remove from configuration lines related to DNS. (see [Customization section](#customization))
+> In case of DNS not resolving issues or if you plan to only route VPN subnet, remove from configuration lines related to DNS. (see [Customization section](#customization))
 
 ## How to start
 1. Create `compose.yml` customized to your needs.
@@ -194,4 +192,5 @@ Key used to used to encrypt and authenticate the TLS control channel, providing 
 - **Keepalive:** Set `command: keepalive` to keep the container running for debugging purposes.\
 This will keep the container alive without starting the OpenVPN server.
 - **Container Shell:** Use `docker exec -it openvpn /bin/bash` to access the container shell for debugging.
+
 
