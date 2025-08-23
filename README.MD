@@ -23,7 +23,7 @@ OpenVPN server as a Docker container. Secured with EasyRSA. Project is meant to 
 > ```  
 > to your `compose.yml`.  
 >
-> When using `network_mode: host`, make sure to **remove any `ports:` and `networks:` sections** from the service, since they are not applicable in host mode.  
+> When using `network_mode: host`, make sure to remove any `ports` and `networks` sections from the service, since they are not applicable in host mode.  
 
 ## How to start
 1. Create `compose.yml` customized to your needs.
@@ -201,6 +201,7 @@ Key used to used to encrypt and authenticate the TLS control channel, providing 
 - **Keepalive:** Set `command: keepalive` to keep the container running for debugging purposes.\
 This will keep the container alive without starting the OpenVPN server.
 - **Container Shell:** Use `docker exec -it openvpn /bin/bash` to access the container shell for debugging.
+
 
 
 
