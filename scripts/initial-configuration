@@ -53,10 +53,12 @@ topology subnet
 server $SUBNET_IP $SUBNET_MASK
 ifconfig-pool-persist ipp.txt
 
+#Either tell clients to redirect all traffic through VPN excluding DHCP and push DNS configuration
 push \"redirect-gateway def1 bypass-dhcp\"
 push \"dhcp-option DNS 1.0.0.1\"
 push \"dhcp-option DNS 1.1.1.1\"
-#OR
+
+#Or tell clients to route only specified subnet (comment three previous lines)
 #push \"route $SUBNET_IP $SUBNET_MASK\"
 
 dh none
@@ -74,6 +76,8 @@ tls-version-min 1.2
 tls-cipher TLS-ECDHE-ECDSA-WITH-AES-128-GCM-SHA256
 client-config-dir $DF/ccd
 status /var/log/openvpn/status.log
+tun-mtu 1400
+mssfix 1360
 verb 3" >> $DF/server.conf
 
 # Create client config template
@@ -102,4 +106,6 @@ tls-version-min 1.2
 tls-cipher TLS-ECDHE-ECDSA-WITH-AES-128-GCM-SHA256
 ignore-unknown-option block-outside-dns
 setenv opt block-outside-dns
+tun-mtu 1400
+mssfix 1360
 verb 3" >> $DF/client-template.txt

@@ -33,7 +33,7 @@ OpenVPN server as a Docker container. Secured with EasyRSA. Project is meant to 
     openvpn:
         container_name: openvpn
         hostname: openvpn
-        image: gq97a6/openvpn
+        image: gq97a6/docker-openvpn
         restart: unless-stopped
         ports:
             - 1194:1194/udp

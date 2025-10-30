@@ -19,5 +19,8 @@ RUN mkdir -p /var/log/openvpn
 COPY ./scripts /etc/openvpn-scripts/
 RUN chmod +x /etc/openvpn-scripts/*
 
+#Fix incorrect line endings (Windows CRLF instead of Unix LF)
+RUN sed -i 's/\r$//' /etc/openvpn-scripts/*
+
 CMD ["run-server"]
 #RUN sysctl -w net.ipv4.ip_forward=1
